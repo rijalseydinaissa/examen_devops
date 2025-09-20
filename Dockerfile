@@ -1,4 +1,4 @@
-# Build image docker for java 17
+# Build image docker for java 17 pour deployer sur render
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 COPY target/demo-0.0.1-SNAPSHOT.jar app.jar
