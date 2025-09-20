@@ -8,7 +8,8 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "demo-springboot"
-        DOCKERHUB_REPO = "issadiol/demo-springboot" // <--- ton repo DockerHub
+        DOCKERHUB_REPO = "issadiol/demo-springboot" // ton repo DockerHub
+        RENDER_DEPLOY_HOOK = "https://api.render.com/deploy/srv-d378rfmr433s73ehe220?key=aJVRFosBwPE" // ton deploy hook
     }
 
     stages {
@@ -41,11 +42,18 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to Render') {
+            steps {
+                echo 'Déclenchement du déploiement Render...'
+                sh 'curl -X POST $RENDER_DEPLOY_HOOK'
+            }
+        }
     }
 
     post {
         success {
-            echo 'Image poussée sur Docker Hub 🎉'
+            echo 'Image poussée et déploiement Render déclenché 🎉'
         }
         failure {
             echo 'Échec du pipeline ❌'
