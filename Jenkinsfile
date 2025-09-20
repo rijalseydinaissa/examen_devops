@@ -8,6 +8,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "demo-springboot"
+        DOCKERHUB_REPO = "tonuserdockerhub/demo-springboot" // <--- ton repo DockerHub
     }
 
     stages {
@@ -26,20 +27,25 @@ pipeline {
         stage('Docker Build') {
             steps {
                 sh 'docker build -t $DOCKER_IMAGE .'
+                sh 'docker tag $DOCKER_IMAGE $DOCKERHUB_REPO:latest'
             }
         }
 
-        /*stage('Run with Docker') {
+        stage('Push to Docker Hub') {
             steps {
-                sh 'docker rm -f demo-app || true'
-                sh 'docker run -d --name demo-app -p 8080:8080 $DOCKER_IMAGE'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials',
+                        usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+                    sh 'docker push $DOCKERHUB_REPO:latest'
+                    sh 'docker logout'
+                }
             }
-        }*/
+        }
     }
 
     post {
         success {
-            echo 'Déploiement réussi 🎉'
+            echo 'Image poussée sur Docker Hub 🎉'
         }
         failure {
             echo 'Échec du pipeline ❌'
