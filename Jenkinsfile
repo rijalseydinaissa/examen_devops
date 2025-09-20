@@ -8,7 +8,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "demo-springboot"
-        DOCKERHUB_REPO = "tonuserdockerhub/demo-springboot" // <--- ton repo DockerHub
+        DOCKERHUB_REPO = "issadiol/demo-springboot" // <--- ton repo DockerHub
     }
 
     stages {
